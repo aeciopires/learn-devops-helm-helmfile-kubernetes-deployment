@@ -40,6 +40,21 @@ aws_access_key_id = YOUR_ACCESS_KEY_HERE
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_HERE
 ```
 
+Install awscli package
+
+CentOS/Red Hat:
+
+```bash
+sudo yum -y install awscli
+```
+
+Debian/Ubuntu:
+
+```bash
+sudo apt-get -y install awscli
+```
+
+
 # AWS Regions and Availability Zones
 
 List of regions and availability zones in AWS.
