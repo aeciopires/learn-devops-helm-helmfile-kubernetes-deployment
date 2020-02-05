@@ -4,6 +4,7 @@
 - [Install Helm 3](#install-helm-3)
 - [Setup Tiller User Account in your Kubernetes Cluster in AWS](#setup-tiller-user-account-in-your-kubernetes-cluster-in-aws)
 - [Run GOGS with Helm](#run-gogs-with-helm)
+- [How to understand persistentVolumeClaim and persistentVolumes](#how-to-understand-persistentvolumeclaim-and-persistentvolumes)
 
 <!-- TOC -->
 
@@ -128,4 +129,18 @@ helm2 install --name udemy --values values.yaml gogs
 kubectl get service,nodes,pods
 
 kubectl describe NAME_POD
+```
+
+# How to understand persistentVolumeClaim and persistentVolumes
+
+How to edit persistentVolumeClaim and persistentVolumes on the fly
+
+Source: https://kubernetes.io/docs/tasks/administer-cluster/change-pv-reclaim-policy/
+
+
+Choose one of your PersistentVolumes and change its reclaim policy:
+
+```bash
+kubectl patch pv <your-pv-name> -p '{"spec":{"persistentVolumeReclaimPolicy":"Retain"}}'
+ where <your-pv-name> is the name of your chosen PersistentVolume.
 ```
