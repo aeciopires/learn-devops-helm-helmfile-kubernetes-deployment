@@ -1,12 +1,16 @@
 <!-- TOC -->
 
-- [AWS Regions and Availability Zones](#aws-regions-and-availability-zones)
 - [Configure Access Account AWS](#configure-access-account-aws)
+- [AWS Regions and Availability Zones](#aws-regions-and-availability-zones)
 - [Note 1:](#note-1)
 - [Install Kops](#install-kops)
 - [Install Terraform](#install-terraform)
 - [Install Kubectl](#install-kubectl)
 - [Management Kubernetes Cluster](#management-kubernetes-cluster)
+- [Install Docker-CE](#install-docker-ce)
+- [Deploy Jupyter Notebook Locally](#deploy-jupyter-notebook-locally)
+- [Deploy Jupyter Notebook in Kubernetes](#deploy-jupyter-notebook-in-kubernetes)
+- [Access SSH Kubernetes Nodes](#access-ssh-kubernetes-nodes)
 
 
 <!-- TOC -->
@@ -42,7 +46,7 @@ aws_secret_access_key = YOUR_SECRET_ACCESS_KEY_HERE
 
 Install awscli package
 
-CentOS/Red Hat:
+CentOS:
 
 ```bash
 sudo yum -y install awscli
@@ -202,7 +206,7 @@ exit
 
 How to start Kubernetes cluster by using Kops and Terraform
 
-First create a zone DNS private in Router53 service of AWS with name `devopsinuse.com` or other domain name.
+First create a `zone DNS private` in Router53 service of AWS with name `devopsinuse.com` or other domain name in region `us-east-2` (Ohio).
 
 Second create a bucket S3 public with name `aecio.devopsinuse.com` or other domain name.
 
@@ -278,5 +282,93 @@ kops update cluster \
  --ssh-public-key=~/.ssh/udemy_devopsinuse.pub
 ```
 
+# Install Docker-CE
+
+Follow instructions of page for install Docker-CE
+
+* Ubuntu: https://docs.docker.com/install/linux/docker-ce/ubuntu/
+* Debian: https://docs.docker.com/install/linux/docker-ce/debian/
+* CentOS: https://docs.docker.com/install/linux/docker-ce/centos/
+
+# Deploy Jupyter Notebook Locally
+
+Documentation:
+
+* https://jupyter.org
+* https://jupyter.org/documentation
 
 
+Execute the commands:
+
+```bash
+sudo su
+
+docker ps
+
+docker run -d -p 8888:8888 --name jupyter jupyter/scipy-notebook:2c80cf3537ca
+
+docker logs -f jupyter
+```
+
+Copy/paste this URL into your browser when you connect for the first time, to login with a token. Example:
+
+http://localhost:8888/?token=<some_long_token>
+
+Stop and remove the container with the command.
+
+```bash
+docker stop jupyter
+
+docker rm jupyter
+
+exit
+```
+
+# Deploy Jupyter Notebook in Kubernetes
+
+Execute the commands.
+
+```bash
+cd ~/udemy/learn-devops-helm-helmfile-kubernetes-deployment/kops_cluster
+kubectl create -f jupyter_notebook.yaml
+```
+
+List the pods.
+
+```bash
+kubectl get rc,services,node,pods,deployments -n default
+```
+
+View logs the service `service/jupyter-k8s-udemy`.
+
+```bash
+kubectl logs -f service/jupyter-k8s-udemy
+```
+
+Get information of pod and service `service/jupyter-k8s-udemy`.
+
+```bash
+kubectl describe NAME_POD
+
+kubectl describe service/jupyter-k8s-udemy
+```
+
+Configure a rule in security group for ingress Port `30040/TCP` to allow external access.
+
+# Access SSH Kubernetes Nodes
+
+How to SSH to physical EC2 instances in AWS
+
+```bash
+ssh -i ~/.ssh/udemy_devopsinuse.pub admin@<public_ip_address_of_node_1>
+ssh -i ~/.ssh/udemy_devopsinuse.pub admin@<public_ip_address_of_node_2>
+ssh -i ~/.ssh/udemy_devopsinuse.pub admin@<public_ip_address_of_master>
+```
+
+These publicly accessible IP addresses can be retrieved even from your command line
+
+```bash
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output=text
+```
