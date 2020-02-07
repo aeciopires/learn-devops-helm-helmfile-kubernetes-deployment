@@ -1,4 +1,4 @@
-context: kops.peelmicro.com   # kube-context (--kube-context)
+context: aecio.devopsinuse.com   # kube-context (--kube-context)
  
 releases:
   # Published chart example
@@ -8,13 +8,13 @@ releases:
     values:
       - jenkins/jenkins_custom_values.yaml   # value files (--values)
     set:                                   # values (--set)
-      - name: Master.ServiceType
+      - name: Master.serviceType
         value: NodePort
-      - name: Master.NodePort
+      - name: Master.nodePort
         value: 30477
-      - name: Persistence.Size
+      - name: Persistence.size
         value: 2Gi
-      - name: Master.AdminPassword
-        value: <some_password>
+      - name: Master.adminPassword
+        value: adminadmin
       - name: rbac.install
         value: true
