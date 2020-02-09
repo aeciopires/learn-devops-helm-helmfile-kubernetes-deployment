@@ -2,7 +2,7 @@
 
 - [How to create HELMFILE specification for Grafana deployment by using HELM charts](#how-to-create-helmfile-specification-for-grafana-deployment-by-using-helm-charts)
   - [How to retrieve public IP addresses of our Kubernetes cluster from cmd](#how-to-retrieve-public-ip-addresses-of-our-kubernetes-cluster-from-cmd)
-  - [Remove Jenkins](#remove-jenkins)
+  - [Remove Prometheus and Grafana](#remove-prometheus-and-grafana)
 
 <!-- TOC -->
 
@@ -37,17 +37,7 @@ cd ~/udemy/learn-devops-helm-helmfile-kubernetes-deployment/local_charts/prometh
 
 helmfile -f helmfile_specification_pg.yaml sync
 
-
-sudo kubectl port-forward -n NAMESPACE NAME_POD LOCALHOST_PORT:NODE_PORT
-
-
-printf $(kubectl get secret --namespace default jenkins-course-udemy -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
-
-export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services jenkins-course-udemy)
-
-export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
-
-echo http://$NODE_IP:$NODE_PORT/login
+kubectl get pods -n prometheus
 ```
 
 
@@ -60,9 +50,9 @@ aws ec2 describe-instances \
 ```
 
 
-## Remove Jenkins
+## Remove Prometheus and Grafana
 
-Execute commands to remove Jenkins with helmfile.
+Execute commands to remove Prometheus and Grafana with helmfile.
 
 ```bash
 cd ~/udemy/learn-devops-helm-helmfile-kubernetes-deployment/local_charts/prometheus_grafana/
