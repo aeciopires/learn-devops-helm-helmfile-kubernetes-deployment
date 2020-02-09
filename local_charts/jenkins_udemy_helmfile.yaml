@@ -4,17 +4,18 @@ releases:
   # Published chart example
   - name: jenkins-course-udemy    # name of this release
     namespace: default            # target namespace
-    chart: stable/jenkins         # repository/chart` syntax
+#    chart: stable/jenkins         # repository/chart` syntax
+    chart: ./jenkins         # repository/chart` syntax
     values:
       - jenkins/jenkins_custom_values.yaml   # value files (--values)
     set:                                   # values (--set)
-      - name: Master.serviceType
+      - name: Master.ServiceType
         value: NodePort
-      - name: Master.nodePort
+      - name: Master.NodePort
         value: 30477
       - name: Persistence.size
         value: 2Gi
-      - name: Master.adminPassword
+      - name: Master.AdminPassword
         value: adminadmin
       - name: rbac.install
         value: true

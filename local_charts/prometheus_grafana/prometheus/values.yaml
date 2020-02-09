@@ -645,7 +645,7 @@ server:
     ## Prometheus server Ingress hostnames with optional path
     ## Must be provided if Ingress is enabled
     ##
-    hosts: ["prometheus.kops.peelmicro.com"]
+    hosts: ["prometheus.aecio.devopsinuse.com"]
     #   - prometheus.domain.com
     #   - domain.com/prometheus
 

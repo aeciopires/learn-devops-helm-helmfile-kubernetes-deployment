@@ -26,7 +26,7 @@ livenessProbe:
 
 image:
   repository: grafana/grafana
-  tag: 6.0.0
+  tag: 6.6.0
   pullPolicy: IfNotPresent
 
   ## Optionally specify an array of imagePullSecrets.
@@ -89,7 +89,7 @@ ingress:
   labels: {}
   path: /
   hosts:
-    - grafana.kops.peelmicro.com
+    - grafana.aecio.devopsinuse.com
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -151,7 +151,7 @@ persistence:
 
 # Administrator credentials when not using an existing secret (see below)
 adminUser: admin
-adminPassword: Start123#
+adminPassword: adminadmin
 
 # Use an existing secret for the admin user.
 admin:

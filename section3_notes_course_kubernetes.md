@@ -7,6 +7,8 @@
 - [How to understand persistentVolumeClaim and persistentVolumes](#how-to-understand-persistentvolumeclaim-and-persistentvolumes)
 - [Install Hellfile](#install-hellfile)
 - [How to create HELMFILE specification for JENKINS deployment by using HELM charts](#how-to-create-helmfile-specification-for-jenkins-deployment-by-using-helm-charts)
+  - [How to retrieve public IP addresses of our Kubernetes cluster from cmd](#how-to-retrieve-public-ip-addresses-of-our-kubernetes-cluster-from-cmd)
+  - [Remove Jenkins](#remove-jenkins)
 
 <!-- TOC -->
 
@@ -126,11 +128,17 @@ cd learn-devops-helm-helmfile-kubernetes-deployment/local_installation/gogs
 
 helm2 repo update
 
-helm2 install --name udemy --values values.yaml gogs
+helm2 install --name udemy --values values.yaml .
 
 kubectl get service,nodes,pods
 
 kubectl describe NAME_POD
+
+sudo kubectl port-forward -n NAMESPACE NAME_POD LOCALHOST_PORT:NODE_PORT
+
+helm2 delete udemy
+
+helm2 list
 ```
 
 # How to understand persistentVolumeClaim and persistentVolumes
@@ -238,4 +246,45 @@ Process HELMFILE deployment:
 cd ~/udemy/learn-devops-helm-helmfile-kubernetes-deployment/local_charts/
 
 helmfile -f jenkins_udemy_helmfile.yaml sync
+
+
+sudo kubectl port-forward -n NAMESPACE NAME_POD LOCALHOST_PORT:NODE_PORT
+
+
+printf $(kubectl get secret --namespace default jenkins-course-udemy -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
+
+export NODE_PORT=$(kubectl get --namespace default -o jsonpath="{.spec.ports[0].nodePort}" services jenkins-course-udemy)
+
+export NODE_IP=$(kubectl get nodes --namespace default -o jsonpath="{.items[0].status.addresses[0].address}")
+
+echo http://$NODE_IP:$NODE_PORT/login
+```
+
+
+## How to retrieve public IP addresses of our Kubernetes cluster from cmd
+
+```bash
+aws ec2 describe-instances \
+  --query "Reservations[*].Instances[*].PublicIpAddress" \
+  --output=text
+```
+
+Simple Jenkins job shell script:
+
+```bash
+HELM_CHARTS=$(ls -al stable | wc -l)
+
+echo -e "You have just cloned ${HELM_CHARTS} number of HELM CHARTS from github.com"
+```
+
+## Remove Jenkins
+
+Execute commands to remove Jenkins with helmfile.
+
+```bash
+cd ~/udemy/learn-devops-helm-helmfile-kubernetes-deployment/local_charts/
+
+helmfile -f jenkins_udemy_helmfile.yaml list
+
+helmfile -f jenkins_udemy_helmfile.yaml destroy
 ```
